@@ -170,48 +170,219 @@ def simulate_syntax_error():
     eval("x =")  # Crash
 
 
-# --- FIXABLE LOGIC BUGS (FOR AGENT TO SOLVE) ---
+# --- FIXABLE LOGIC BUGS (REALISTIC FEATURES) ---
 
 @router.post("/simulate/bug/attribute_error")
-def simulate_attribute_error():
+def feature_add_to_cart():
     """
-    Bug: Typo in method name.
+    Feature: Add item to shopping cart.
+    Bug: AttributeError (Typo in method name).
     """
-    logger.info("triggering_bug", type="AttributeError")
-    my_list = []
-    # FIX: Should be .append()
-    my_list.appendd("item") 
-    return {"message": "Should fail before this"}
+    logger.info("accessing_feature", feature="shopping_cart", action="add")
+    cart = ["apple", "orange"]
+    # FIX: Change 'appendd' to 'append'
+    cart.appendd("banana") 
+    return {"status": "success", "cart": cart}
 
 @router.post("/simulate/bug/name_error")
-def simulate_name_error():
+def feature_get_user_profile():
     """
-    Bug: Variable name mismatch.
+    Feature: User Profile.
+    Bug: NameError (Variable name mismatch).
     """
-    logger.info("triggering_bug", type="NameError")
+    logger.info("accessing_feature", feature="user_profile", action="get")
     user_name = "Alice"
-    # FIX: Should be user_name
-    return {"user": username} 
+    email = "alice@example.com"
+    # FIX: Change 'username' to 'user_name'
+    return {"user": username, "email": email} 
 
 @router.post("/simulate/bug/value_error")
-def simulate_value_error():
+def feature_process_payment():
     """
-    Bug: Invalid type cast logic.
+    Feature: Process payment amount.
+    Bug: ValueError (Invalid type cast).
     """
-    logger.info("triggering_bug", type="ValueError")
-    value = "not_a_number"
-    # FIX: Should validate input or catch error
-    return {"number": int(value)}
+    logger.info("accessing_feature", feature="payment", action="process")
+    amount_str = "$50" # Received from input
+    # FIX: Strip '$' before converting: int(amount_str.replace('$', ''))
+    amount = int(amount_str)
+    return {"status": "processed", "amount": amount}
 
 @router.post("/simulate/bug/file_not_found")
-def simulate_file_not_found():
+def feature_load_config():
     """
-    Bug: Hardcoded wrong path.
+    Feature: Load Application Config.
+    Bug: FileNotFoundError (Wrong path).
     """
-    logger.info("triggering_bug", type="FileNotFoundError")
-    # FIX: Path should be valid or handled
-    with open("/tmp/non_existent_config.json", "r") as f:
-        return f.read()
+    logger.info("accessing_feature", feature="config", action="load")
+    # FIX: Handle missing file or point to a real file (e.g., match standard config)
+    # For simulation, getting this to work might mean mocking the return or creating the file.
+    with open("config/app_settings.json", "r") as f:
+        return {"config": f.read()}
+
+@router.post("/simulate/bug/unbound_local")
+def feature_increment_counter():
+    """
+    Feature: Visit Counter.
+    Bug: UnboundLocalError (Scope issue).
+    """
+    logger.info("accessing_feature", feature="counter", action="increment")
+    count = 100
+    def update_count():
+        # FIX: Add 'nonlocal count'
+        count += 1
+        return count
+    new_count = update_count()
+    return {"visits": new_count}
+
+@router.post("/simulate/bug/module_not_found")
+def feature_load_plugin():
+    """
+    Feature: Load Export Plugin.
+    Bug: ModuleNotFoundError.
+    """
+    logger.info("accessing_feature", feature="plugins", action="load_export")
+    # FIX: Remove bad import or mock it
+    import pdf_export_plugin 
+    return {"status": "plugin_loaded", "plugin": "pdf_export"}
+
+@router.post("/simulate/bug/json_decode")
+def feature_parse_webhook():
+    """
+    Feature: Parse Webhook Payload.
+    Bug: JSONDecodeError.
+    """
+    import json
+    logger.info("accessing_feature", feature="webhook", action="parse")
+    # Simulating a payload execution
+    raw_payload = "{'event': 'order_created'}" # Single quotes are invalid JSON
+    # FIX: Use double quotes: '{"event": "order_created"}'
+    data = json.loads(raw_payload)
+    return {"parsed": True, "data": data}
+
+@router.post("/simulate/bug/permission_error")
+def feature_read_system_stats():
+    """
+    Feature: System Health Stats.
+    Bug: PermissionError.
+    """
+    logger.info("accessing_feature", feature="system_stats", action="read")
+    # FIX: Read a user-accessible file (e.g., /proc/loadavg on Linux or just a mock)
+    # /etc/shadow is root only
+    with open("/etc/shadow", "r") as f:
+        return {"stats": f.read()}
+
+
+# --- ADDITIONAL UNHANDLED ERRORS ---
+
+@router.post("/simulate/unhandled/not_implemented")
+def simulate_not_implemented():
+    """
+    Trigger NotImplementedError.
+    """
+    logger.info("triggering_unhandled_error", type="NotImplementedError")
+    raise NotImplementedError("This feature is coming soon")
+
+@router.post("/simulate/unhandled/assertion")
+def simulate_assertion():
+    """
+    Trigger AssertionError.
+    """
+    logger.info("triggering_unhandled_error", type="AssertionError")
+    assert 1 == 2, "Math is broken"
+
+@router.post("/simulate/unhandled/import_error")
+def simulate_import_error():
+    """
+    Trigger ImportError.
+    """
+    logger.info("triggering_unhandled_error", type="ImportError")
+    raise ImportError("Failed to import required module 'antigravity'")
+
+@router.post("/simulate/unhandled/unicode")
+def simulate_unicode_error():
+    """
+    Trigger UnicodeDecodeError.
+    """
+    logger.info("triggering_unhandled_error", type="UnicodeDecodeError")
+    b'\x80'.decode("utf-8")
+
+@router.post("/simulate/unhandled/floating_point")
+def simulate_floating_point():
+    """
+    Trigger FloatingPointError.
+    """
+    # Note: Python usually handles floats graciously, forcing an error for sim
+    logger.info("triggering_unhandled_error", type="FloatingPointError")
+    import math
+    math.exp(1000) # Overflow -> usually OverflowError, close enough
+
+
+# --- ADDITIONAL HANDLED INCIDENTS ---
+
+@router.post("/simulate/connection_refused")
+def simulate_connection_refused():
+    """
+    Simulates ConnectionRefusedError (Handled).
+    """
+    import socket
+    logger.warning("incident_simulated", type="connection_refused")
+    try:
+        s = socket.socket()
+        s.connect(("127.0.0.1", 9999)) # Port 9999 likely closed
+    except Exception as e:
+        logger.exception(e)
+    return {"message": "Connection refused simulated"}
+
+@router.post("/simulate/service_unavailable")
+def simulate_service_unavailable():
+    """
+    Simulates 503 Service Unavailable behavior (Handled).
+    """
+    from fastapi import HTTPException
+    logger.warning("incident_simulated", type="service_unavailable")
+    try:
+        raise HTTPException(status_code=503, detail="Upstream service down")
+    except Exception as e:
+        logger.exception(e)
+        raise e # Re-raise to actually return 503
+
+@router.post("/simulate/auth_failure")
+def simulate_auth_failure():
+    """
+    Simulates 401 Auth Failure logic error (Handled).
+    """
+    logger.warning("incident_simulated", type="auth_failure")
+    try:
+        raise PermissionError("Invalid API Key provided")
+    except Exception as e:
+        logger.exception(e)
+    return {"error": "Authentication failed"}
+
+@router.post("/simulate/read_timeout")
+def simulate_read_timeout():
+    """
+    Simulates Read Timeout (Handled).
+    """
+    logger.warning("incident_simulated", type="read_timeout")
+    try:
+        raise TimeoutError("Read operation timed out after 5000ms")
+    except Exception as e:
+        logger.exception(e)
+    return {"error": "Read timeout"}
+
+@router.post("/simulate/cache_explosion")
+def simulate_cache_explosion():
+    """
+    Simulates Cache Explosion (Handled).
+    """
+    logger.warning("incident_simulated", type="cache_explosion")
+    try:
+        # Simulate generating too many keys
+        raise MemoryError("Redis cache full: 1000000 keys eviction failed")
+    except Exception as e:
+        logger.exception(e)
+    return {"error": "Cache overflow"}
 
 
 @router.post("/simulate/traffic_gen")
