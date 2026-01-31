@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from .simulation import router as simulation_router
 from .logger import logger
 from .database import get_db_connection
@@ -11,6 +12,15 @@ class TodoItem(BaseModel):
     completed: bool = False
 
 app = FastAPI()
+
+# Enable CORS for Frontend Dashboard
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allow all origins for dev
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
