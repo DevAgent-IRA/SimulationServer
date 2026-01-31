@@ -14,15 +14,11 @@ def notify_agent(payload: dict, agent_url: str = None):
     If agent_url is provided, it tries to POST to it. 
     Otherwise checks AGENT_URL env var.
     """
-    import os
-    if not agent_url:
-        agent_url = os.getenv("AGENT_URL")
-
-    logger.info("agent_notification", payload=payload, type="incident_trigger")
+    logger.debug("agent_notification", payload=payload, type="incident_trigger")
     
     if agent_url:
         try:
             response = requests.post(agent_url, json=payload, timeout=5)
             logger.info("agent_webhook_payload_sent", status_code=response.status_code)
         except Exception as e:
-            logger.error("agent_webhook_failed", error=str(e))
+            logger.debug("agent_webhook_failed", error=str(e))

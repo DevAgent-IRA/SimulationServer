@@ -14,7 +14,7 @@ def get_db_connection():
         conn.row_factory = sqlite3.Row
         return conn
     except sqlite3.Error as e:
-        logger.error("db_connection_failed", error=str(e), type="db_error")
+        logger.error("db_connection_failed", details={"error": str(e), "type": "db_error"})
         raise e
 
 def init_db():
@@ -34,7 +34,7 @@ def init_db():
         conn.close()
         logger.info("db_initialized", db_file=DB_FILE)
     except Exception as e:
-        logger.error("db_initialization_failed", error=str(e))
+        logger.critical("db_initialization_failed", details={"error": str(e)})
 
 # Initialize on module load (simple approach) or call from main
 init_db()
