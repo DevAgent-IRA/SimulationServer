@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request, HTTPException
 from .simulation import router as simulation_router
 from .logger import logger
 from .database import get_db_connection
+from .alerts import notify_agent
 import time
 import uuid
 from pydantic import BaseModel
@@ -42,6 +43,15 @@ async def log_requests(request: Request, call_next):
                 "request_id": request_id
             }
         )
+        notify_agent({
+            "incident": "unhandled_exception",
+            "severity": "critical",
+            "details": {
+                "method": request.method,
+                "path": request.url.path,
+                "error": str(e)
+            }
+        })
         raise e
 
 app.include_router(simulation_router)

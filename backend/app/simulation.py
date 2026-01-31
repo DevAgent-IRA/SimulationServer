@@ -87,6 +87,7 @@ def simulate_division_by_zero():
         return {"result": result}
     except Exception as e:
         logger.exception(e)
+        notify_agent({"incident": "division_by_zero", "severity": "high", "details": str(e)})
         return {"error": "Division by zero simulated"}
 
 @router.post("/simulate/db_error")
