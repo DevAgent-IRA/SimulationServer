@@ -34,7 +34,7 @@ def init_db():
         conn.close()
         logger.info("db_initialized", db_file=DB_FILE)
     except Exception as e:
-        logger.critical("db_initialization_failed", details={"error": str(e)})
+        logger.error("db_initialization_failed", error=str(e))
 
 # Initialize on module load (simple approach) or call from main
 init_db()
