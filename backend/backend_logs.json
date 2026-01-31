@@ -1,0 +1,6 @@
+{"db_file": "todos.db", "event": "db_initialized", "logger": "app.database", "level": "info", "timestamp": "2026-01-31T10:31:34.253240Z"}
+{"method": "POST", "path": "/simulate/timeout", "request_id": "c4d4ffc8-95a1-4eb8-a0f6-9d40b7200a2b", "event": "request_started", "logger": "app.database", "level": "info", "timestamp": "2026-01-31T10:31:42.130274Z"}
+{"type": "api_timeout", "duration": 1, "event": "incident_simulated", "logger": "app.database", "level": "warning", "timestamp": "2026-01-31T10:31:42.132676Z"}
+{"duration": 1, "event": "api_timeout_occurred", "logger": "app.database", "level": "error", "timestamp": "2026-01-31T10:31:43.137178Z"}
+{"payload": {"incident": "api_timeout", "severity": "medium", "details": "Endpoint took 1s to respond."}, "type": "incident_trigger", "event": "agent_notification", "logger": "app.database", "level": "info", "timestamp": "2026-01-31T10:31:43.138222Z"}
+{"method": "POST", "path": "/simulate/timeout", "status_code": 200, "process_time": 1.008904218673706, "request_id": "c4d4ffc8-95a1-4eb8-a0f6-9d40b7200a2b", "event": "request_finished", "logger": "app.database", "level": "info", "timestamp": "2026-01-31T10:31:43.139452Z"}

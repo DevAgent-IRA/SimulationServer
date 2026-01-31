@@ -1,4 +1,5 @@
 fastapi
 uvicorn
+structlog
 python-json-logger
 requests
