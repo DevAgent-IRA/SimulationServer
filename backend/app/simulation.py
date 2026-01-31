@@ -3,6 +3,8 @@ from .logger import logger
 from .alerts import send_email_alert, notify_agent
 import time
 import threading
+import uuid
+
 
 router = APIRouter()
 
@@ -100,4 +102,72 @@ def simulate_db_error(duration: int = 30):
     except Exception as e:
         logger.error("simulation_failed", error=str(e))
         return {"error": str(e)}
+
+
+@router.post("/simulate/traffic_gen")
+def simulate_traffic_gen(duration: int = 60, background_tasks: BackgroundTasks = None):
+    """
+    Generates continuous traffic for a specified duration.
+    Ratio: 4 Success : 1 Error.
+    """
+    import random
+    
+    logger.info("traffic_gen_started", duration=duration, ratio="4:1")
+    
+    def generate_traffic():
+        end_time = time.time() + duration
+        
+        while time.time() < end_time:
+            # 4:1 ratio means 80% success, 20% error
+            is_success = random.random() < 0.8
+            
+            request_id = str(uuid.uuid4())
+            
+            if is_success:
+                # Simulate successful Todo operations
+                action = random.choice(["get_todos", "create_todo", "update_todo"])
+                logger.info(
+                    "request_finished", 
+                    method="GET" if action == "get_todos" else "POST",
+                    path="/todos",
+                    status_code=200,
+                    process_time=random.uniform(0.01, 0.1), 
+                    request_id=request_id,
+                    action=action
+                )
+            else:
+                # Simulate errors
+                error_type = random.choice(["timeout", "db_error", "500_internal"])
+                status_code = 504 if error_type == "timeout" else 500
+                
+                # Assign meaningful paths based on error type
+                if error_type == "db_error":
+                    path = "/todos"
+                elif error_type == "timeout":
+                    path = "/simulate/timeout"
+                else:
+                    path = "/simulate/disk_full"
+
+                logger.error(
+                    "request_failed",
+                    method="POST",
+                    path=path,
+                    status_code=status_code,
+                    error=error_type,
+                    process_time=random.uniform(0.1, 2.0),
+                    request_id=request_id
+                )
+            
+            # Sleep to prevent flooding logs too fast
+            time.sleep(random.uniform(0.1, 0.5))
+
+        logger.info("traffic_gen_finished", duration=duration)
+
+    if background_tasks:
+        background_tasks.add_task(generate_traffic)
+    else:
+        # Fallback if called directly or without background tasks dependency injection working intuitively
+        threading.Thread(target=generate_traffic).start()
+        
+    return {"message": f"Traffic generation started for {duration}s"}
 
