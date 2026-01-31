@@ -132,6 +132,8 @@ def simulate_index_error():
     """
     logger.info("triggering_unhandled_error", type="IndexError")
     my_list = [1, 2, 3]
+    if len(my_list) < 11:
+        return {"error": "List does not have enough elements"}
     return my_list[10]  # Crash
 
 @router.post("/simulate/unhandled/key_error")
