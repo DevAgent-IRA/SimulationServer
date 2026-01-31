@@ -34,11 +34,13 @@ async def log_requests(request: Request, call_next):
         process_time = time.time() - start_time
         logger.error(
             "request_failed",
-            method=request.method,
-            path=request.url.path,
-            error=str(e),
-            process_time=process_time,
-            request_id=request_id
+            details={
+                "method": request.method,
+                "path": request.url.path,
+                "error": str(e),
+                "process_time": process_time,
+                "request_id": request_id
+            }
         )
         raise e
 
@@ -52,7 +54,7 @@ def get_todos():
         conn.close()
         return [{"id": row["id"], "title": row["title"], "completed": bool(row["completed"])} for row in todos]
     except Exception as e:
-        logger.error("db_query_failed", error=str(e))
+        logger.error("db_query_failed", details={"error": str(e)})
         raise HTTPException(status_code=500, detail="Database Error")
 
 @app.post("/todos")
@@ -66,7 +68,7 @@ def create_todo(item: TodoItem):
         logger.info("todo_created", id=todo_id, title=item.title)
         return {"id": todo_id, "title": item.title, "completed": item.completed}
     except Exception as e:
-        logger.error("db_insert_failed", error=str(e))
+        logger.error("db_insert_failed", details={"error": str(e)})
         raise HTTPException(status_code=500, detail="Database Error")
 
 @app.get("/")

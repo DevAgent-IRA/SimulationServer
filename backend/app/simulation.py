@@ -23,8 +23,12 @@ def simulate_memory_leak(background_tasks: BackgroundTasks):
         for _ in range(10):
             # Append 10MB strings
             memory_hog.append(" " * 10 * 1024 * 1024) 
-            logger.info("memory_usage_increasing", current_size_mb=len(memory_hog) * 10)
+            # Reduced log frequency/level as requested
+            # logger.debug("memory_usage_increasing", current_size_mb=len(memory_hog) * 10)
             time.sleep(1)
+        
+        # Log the incident in the standardized format
+        logger.critical("memory_leak_detected", details={"memory_usage_percent": 85.0, "threshold": 80.0})
         
         send_email_alert("High Memory Usage Detected", "Memory usage has crossed critical threshold.")
         notify_agent({"incident": "memory_leak", "severity": "high", "details": "Memory usage spike detected."})
@@ -49,7 +53,8 @@ def simulate_timeout(duration: int = 30):
     time.sleep(duration)
     
     # This might not be reached if the client times out, but we log it anyway
-    logger.error("api_timeout_occurred", duration=duration)
+    # This might not be reached if the client times out, but we log it anyway
+    logger.error("api_timeout_occurred", details={"duration": duration, "endpoint": "/simulate/timeout"})
     notify_agent({"incident": "api_timeout", "severity": "medium", "details": f"Endpoint took {duration}s to respond."})
     return {"message": f"Finished sleeping for {duration}s"}
 
@@ -61,7 +66,9 @@ def simulate_disk_full():
     logger.warning("incident_simulated", type="disk_full", status="simulated")
     
     # Log a metric-like entry
-    logger.error("disk_usage_critical", disk_usage_percent=99.9, mount="/data")
+    # Log a metric-like entry
+    # Log a metric-like entry
+    logger.critical("disk_usage_critical", details={"disk_usage_percent": 99.9, "mount": "/data"})
     
     send_email_alert("Disk Full Warning", "Disk usage at 99.9% on /data")
     notify_agent({"incident": "disk_full", "severity": "critical", "details": "Disk usage critical."})
@@ -100,7 +107,7 @@ def simulate_db_error(duration: int = 30):
         else:
             return {"message": "DB file not found, maybe already broken?"}
     except Exception as e:
-        logger.error("simulation_failed", error=str(e))
+        logger.error("simulation_failed", details={"error": str(e)})
         return {"error": str(e)}
 
 
@@ -126,7 +133,7 @@ def simulate_traffic_gen(duration: int = 60, background_tasks: BackgroundTasks =
             if is_success:
                 # Simulate successful Todo operations
                 action = random.choice(["get_todos", "create_todo", "update_todo"])
-                logger.info(
+                logger.debug(
                     "request_finished", 
                     method="GET" if action == "get_todos" else "POST",
                     path="/todos",
@@ -149,13 +156,14 @@ def simulate_traffic_gen(duration: int = 60, background_tasks: BackgroundTasks =
                     path = "/simulate/disk_full"
 
                 logger.error(
-                    "request_failed",
-                    method="POST",
-                    path=path,
-                    status_code=status_code,
-                    error=error_type,
-                    process_time=random.uniform(0.1, 2.0),
-                    request_id=request_id
+                    error_type,  # Use the specific error type as the incident_type
+                    details={
+                        "method": "POST",
+                        "path": path,
+                        "status_code": status_code,
+                        "process_time": random.uniform(0.1, 2.0),
+                        "request_id": request_id
+                    }
                 )
             
             # Sleep to prevent flooding logs too fast
