@@ -12,7 +12,7 @@ def notify_agent(payload: dict, agent_url: str = None):
     """
     Simulates notifying the AI agent. 
     If agent_url is provided, it tries to POST to it. 
-    Otherwise it just logs.
+    Otherwise checks AGENT_URL env var.
     """
     logger.debug("agent_notification", payload=payload, type="incident_trigger")
     
