@@ -43,15 +43,11 @@ async def log_requests(request: Request, call_next):
                 "request_id": request_id
             }
         )
-        notify_agent({
-            "incident": "unhandled_exception",
-            "severity": "critical",
-            "details": {
-                "method": request.method,
-                "path": request.url.path,
-                "error": str(e)
-            }
-        })
+        notify_agent(
+            severity="critical",
+            error_message=f"Unhandled Exception: {str(e)} | Method: {request.method} | Path: {request.url.path}",
+            incident_type="unhandled_exception"
+        )
         raise e
 
 app.include_router(simulation_router)

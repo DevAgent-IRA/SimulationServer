@@ -31,7 +31,7 @@ def simulate_memory_leak(background_tasks: BackgroundTasks):
             logger.exception(e)
             
         send_email_alert("High Memory Usage Detected", "Memory usage has crossed critical threshold.")
-        notify_agent({"incident": "memory_leak", "severity": "high", "details": "Memory usage spike detected."})
+        notify_agent(severity="high", error_message="Memory usage spike detected.", incident_type="memory_leak")
 
     background_tasks.add_task(leak)
     return {"message": "Memory leak simulation started"}
@@ -57,7 +57,7 @@ def simulate_timeout(duration: int = 30):
     except Exception as e:
         logger.exception(e)
     
-    notify_agent({"incident": "api_timeout", "severity": "medium", "details": f"Endpoint took {duration}s to respond."})
+    notify_agent(severity="medium", error_message=f"Endpoint took {duration}s to respond.", incident_type="api_timeout")
     return {"message": f"Finished sleeping for {duration}s"}
 
 @router.post("/simulate/disk_full")
@@ -73,7 +73,7 @@ def simulate_disk_full():
         logger.exception(e)
     
     send_email_alert("Disk Full Warning", "Disk usage at 99.9% on /data")
-    notify_agent({"incident": "disk_full", "severity": "critical", "details": "Disk usage critical."})
+    notify_agent(severity="critical", error_message="Disk usage critical.", incident_type="disk_full")
     
     return {"message": "Disk full incident simulated", "metrics": {"disk_usage": 99.9}}
 
@@ -87,7 +87,7 @@ def simulate_division_by_zero():
         return {"result": result}
     except Exception as e:
         logger.exception(e)
-        notify_agent({"incident": "division_by_zero", "severity": "high", "details": str(e)})
+        notify_agent(severity="high", error_message=str(e), incident_type="division_by_zero")
         return {"error": "Division by zero simulated"}
 
 @router.post("/simulate/db_error")
@@ -115,7 +115,7 @@ def simulate_db_error(duration: int = 30):
                     logger.info("db_restored", status="file_restored")
             
             threading.Thread(target=restore).start()
-            notify_agent({"incident": "db_connection_error", "severity": "critical", "details": "Database unreachable."})
+            notify_agent(severity="critical", error_message="Database unreachable.", incident_type="db_connection_error")
             return {"message": f"DB error simulated for {duration}s"}
         else:
             return {"message": "DB file not found, maybe already broken?"}
