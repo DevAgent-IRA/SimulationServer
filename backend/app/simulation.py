@@ -75,6 +75,25 @@ def simulate_disk_full():
     
     return {"message": "Disk full incident simulated", "metrics": {"disk_usage": 99.9}}
 
+@router.post("/simulate/division_by_zero")
+def simulate_division_by_zero():
+    """
+    Simulates a division by zero error.
+    """
+    try:
+        # Perform actual division by zero
+        result = 1 / 0
+        return {"result": result}
+    except ZeroDivisionError as e:
+        logger.error(
+            "division_by_zero_error",
+            details={
+                "error": str(e),
+                "operation": "1/0"
+            }
+        )
+        return {"error": "Division by zero simulated"}
+
 @router.post("/simulate/db_error")
 def simulate_db_error(duration: int = 30):
     """
