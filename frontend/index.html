@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Incident Simulation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+        <!-- HEADER -->
+        <header>
+            <div class="logo">
+                <span style="font-size: 1.5rem;">⚡</span>
+                <h1>Cortex<span style="color: var(--primary);">Sim</span></h1>
+            </div>
+
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <button id="theme-btn" class="theme-toggle" onclick="toggleTheme()">
+                    🌙 Dark
+                </button>
+                <div id="connection-status" class="status-badge connecting">
+                    <span class="dot"></span> Connecting...
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <!-- SECTION 1: WORKING FEATURES -->
+            <section class="section-card">
+                <div class="section-header">
+                    <h2>✅ Live Operations</h2>
+                </div>
+                <div class="grid-buttons">
+                    <button class="feature-btn" onclick="callApi('/todos', 'GET', 'Fetch Todos')">
+                        <span class="btn-icon">📋</span>
+                        <span class="btn-label">Task List</span>
+                        <span class="btn-desc">View active tasks</span>
+                    </button>
+                    <button class="feature-btn" onclick="callApi('/todos', 'POST', 'Create Todo', {title: 'New Task'})">
+                        <span class="btn-icon">➕</span>
+                        <span class="btn-label">New Task</span>
+                        <span class="btn-desc">Create a sample record</span>
+                    </button>
+                    <button class="feature-btn" onclick="callApi('/metrics', 'GET', 'System Metrics')">
+                        <span class="btn-icon">📊</span>
+                        <span class="btn-label">Metrics</span>
+                        <span class="btn-desc">View dashboard stats</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- SECTION 2: FIXABLE FEATURES (THE BUGS) -->
+            <section class="section-card" style="border-top: 4px solid var(--danger);">
+                <div class="section-header">
+                    <h2>🔧 Maintenance Required (Fixable)</h2>
+                    <p style="color: var(--danger); font-weight: 500;">Features reporting errors</p>
+                </div>
+                <div class="grid-buttons">
+                    <!-- Shopping Cart -->
+                    <button class="feature-btn broken" id="btn-cart"
+                        onclick="callApi('/simulate/bug/attribute_error', 'POST', 'Add to Cart', null, 'btn-cart')">
+                        <span class="btn-icon">🛒</span>
+                        <span class="btn-label">Shopping Cart</span>
+                        <span class="btn-desc">Add Item (AttributeError)</span>
+                    </button>
+
+                    <!-- User Profile -->
+                    <button class="feature-btn broken" id="btn-profile"
+                        onclick="callApi('/simulate/bug/name_error', 'POST', 'Get Profile', null, 'btn-profile')">
+                        <span class="btn-icon">👤</span>
+                        <span class="btn-label">User Profile</span>
+                        <span class="btn-desc">Load Data (NameError)</span>
+                    </button>
+
+                    <!-- Payment -->
+                    <button class="feature-btn broken" id="btn-pay"
+                        onclick="callApi('/simulate/bug/value_error', 'POST', 'Process Payment', null, 'btn-pay')">
+                        <span class="btn-icon">💳</span>
+                        <span class="btn-label">Payments</span>
+                        <span class="btn-desc">Process txn (ValueError)</span>
+                    </button>
+
+                    <!-- Config -->
+                    <button class="feature-btn broken" id="btn-config"
+                        onclick="callApi('/simulate/bug/file_not_found', 'POST', 'Load Config', null, 'btn-config')">
+                        <span class="btn-icon">⚙️</span>
+                        <span class="btn-label">Sys Config</span>
+                        <span class="btn-desc">Read settings (FileNotFound)</span>
+                    </button>
+
+                    <!-- Plugins -->
+                    <button class="feature-btn broken" id="btn-plugin"
+                        onclick="callApi('/simulate/bug/module_not_found', 'POST', 'Plugins', null, 'btn-plugin')">
+                        <span class="btn-icon">🔌</span>
+                        <span class="btn-label">Extensions</span>
+                        <span class="btn-desc">Load Plugin (ModuleError)</span>
+                    </button>
+
+                    <!-- Counter -->
+                    <button class="feature-btn broken" id="btn-count"
+                        onclick="callApi('/simulate/bug/unbound_local', 'POST', 'Counter', null, 'btn-count')">
+                        <span class="btn-icon">🔢</span>
+                        <span class="btn-label">Visitors</span>
+                        <span class="btn-desc">Increment (ScopeError)</span>
+                    </button>
+
+                    <!-- Permission -->
+                    <button class="feature-btn broken" id="btn-perm"
+                        onclick="callApi('/simulate/bug/permission_error', 'POST', 'Security', null, 'btn-perm')">
+                        <span class="btn-icon">🔒</span>
+                        <span class="btn-label">Audit Log</span>
+                        <span class="btn-desc">Read Access (PermissionError)</span>
+                    </button>
+
+                    <!-- JSON Decode -->
+                    <button class="feature-btn broken" id="btn-json"
+                        onclick="callApi('/simulate/bug/json_decode', 'POST', 'Webhook', null, 'btn-json')">
+                        <span class="btn-icon">📨</span>
+                        <span class="btn-label">Webhook</span>
+                        <span class="btn-desc">Parse Payload (JSONDecode)</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- SECTION 3: INCIDENTS -->
+            <section class="section-card" style="border-top: 4px solid var(--warning);">
+                <div class="section-header">
+                    <h2>🔥 Infrastructure Stress Tests</h2>
+                </div>
+                <div class="grid-buttons">
+                    <button class="feature-btn critical"
+                        onclick="callApi('/simulate/memory_leak', 'POST', 'Memory Leak')">
+                        <span class="btn-icon">🧠</span>
+                        <span class="btn-label">Memory Leak</span>
+                    </button>
+                    <button class="feature-btn critical" onclick="callApi('/simulate/disk_full', 'POST', 'Disk Full')">
+                        <span class="btn-icon">💾</span>
+                        <span class="btn-label">Disk Full</span>
+                    </button>
+                    <button class="feature-btn critical" onclick="callApi('/simulate/db_error', 'POST', 'DB Crash')">
+                        <span class="btn-icon">🗄️</span>
+                        <span class="btn-label">Break DB</span>
+                    </button>
+                    <button class="feature-btn critical" onclick="callApi('/simulate/timeout', 'POST', 'API Timeout')">
+                        <span class="btn-icon">⏳</span>
+                        <span class="btn-label">Timeout</span>
+                    </button>
+
+                    <!-- Unhandled Errors -->
+                    <button class="feature-btn critical"
+                        onclick="callApi('/simulate/division_by_zero', 'POST', 'Zero Division')">
+                        <span class="btn-icon">➗</span>
+                        <span class="btn-label">Math Crank</span>
+                    </button>
+                    <button class="feature-btn critical"
+                        onclick="callApi('/simulate/unhandled/index_error', 'POST', 'Index Error')">
+                        <span class="btn-icon">📉</span>
+                        <span class="btn-label">List Bounds</span>
+                    </button>
+                    <button class="feature-btn critical"
+                        onclick="callApi('/simulate/unhandled/key_error', 'POST', 'Key Error')">
+                        <span class="btn-icon">🔑</span>
+                        <span class="btn-label">Missing Key</span>
+                    </button>
+                    <button class="feature-btn critical"
+                        onclick="callApi('/simulate/unhandled/type_error', 'POST', 'Type Error')">
+                        <span class="btn-icon">🔣</span>
+                        <span class="btn-label">Bad Type</span>
+                    </button>
+                    <button class="feature-btn critical"
+                        onclick="callApi('/simulate/unhandled/recursion_error', 'POST', 'Recursion')">
+                        <span class="btn-icon">🔄</span>
+                        <span class="btn-label">Stack Overflow</span>
+                    </button>
+                    <button class="feature-btn critical"
+                        onclick="callApi('/simulate/unhandled/syntax_error', 'POST', 'Syntax Error')">
+                        <span class="btn-icon">📝</span>
+                        <span class="btn-label">Bad Syntax</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- TERMINAL LOGS -->
+            <section class="console-section">
+                <div class="console-header">
+                    <span>📡 Live Telemetry Stream</span>
+                    <button style="background:none; border:none; color:white; cursor:pointer; opacity: 0.7;"
+                        onclick="clearLog()">Clear</button>
+                </div>
+                <div id="log-container">
+                    <!-- Logs injected here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL FOR RESULTS -->
+    <div id="result-modal" class="modal-overlay">
+        <div class="modal">
+            <h3 id="modal-title">Result</h3>
+            <div id="modal-body" class="modal-body"></div>
+            <div id="modal-code" class="modal-code"></div>
+            <br>
+            <button class="modal-close" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
