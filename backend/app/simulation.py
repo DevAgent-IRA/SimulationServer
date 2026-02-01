@@ -92,7 +92,7 @@ def simulate_division_by_zero():
     try:
         result = 1 / 0
         return {"result": result}
-    except Exception as e:
+    except ZeroDivisionError as e:
         logger.exception(e)
         full_traceback = traceback.format_exc()
         notify_agent(severity="high", error_message=full_traceback, incident_type="division_by_zero")
