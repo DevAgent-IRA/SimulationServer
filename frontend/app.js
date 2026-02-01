@@ -1,4 +1,4 @@
-const API_BASE = 'https://simulation-server-634070185639.us-central1.run.app';
+const API_BASE = 'http://localhost:8000';
 
 // --- DATA: Human Readable Success Messages ---
 const MESSAGES = {
@@ -41,6 +41,21 @@ const MESSAGES = {
         title: 'Access Granted',
         msg: 'Security audit log accessed successfully.',
         icon: '🔒'
+    },
+    '/simulate/script/math': {
+        title: 'Math Script Fixed',
+        msg: 'buggy_math.py: Calculated efficiency successfully.',
+        icon: '🧮'
+    },
+    '/simulate/script/list': {
+        title: 'List Script Fixed',
+        msg: 'buggy_list.py: Retrieve priority task successfully.',
+        icon: '📋'
+    },
+    '/simulate/script/dict': {
+        title: 'Dict Script Fixed',
+        msg: 'buggy_dict.py: Configured port 8080 found.',
+        icon: '📖'
     },
     '/simulate/division_by_zero': {
         title: 'Calculation Info',

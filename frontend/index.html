@@ -126,7 +126,35 @@
                 </div>
             </section>
 
-            <!-- SECTION 3: INCIDENTS -->
+            <!-- SECTION 3: STANDALONE SCRIPTS -->
+            <section class="section-card" style="border-top: 4px solid #a855f7;">
+                <div class="section-header">
+                    <h2>📜 Standalone Scripts</h2>
+                    <p style="color: #a855f7; font-weight: 500;">Wrappers for external .py files</p>
+                </div>
+                <div class="grid-buttons">
+                    <button class="feature-btn broken" id="btn-script-math"
+                        onclick="callApi('/simulate/script/math', 'POST', 'Math Script', null, 'btn-script-math')">
+                        <span class="btn-icon">🧮</span>
+                        <span class="btn-label">buggy_math.py</span>
+                        <span class="btn-desc">Fix DivZero & Type</span>
+                    </button>
+                    <button class="feature-btn broken" id="btn-script-list"
+                        onclick="callApi('/simulate/script/list', 'POST', 'List Script', null, 'btn-script-list')">
+                        <span class="btn-icon">📋</span>
+                        <span class="btn-label">buggy_list.py</span>
+                        <span class="btn-desc">Fix Index & Attr</span>
+                    </button>
+                    <button class="feature-btn broken" id="btn-script-dict"
+                        onclick="callApi('/simulate/script/dict', 'POST', 'Dict Script', null, 'btn-script-dict')">
+                        <span class="btn-icon">📖</span>
+                        <span class="btn-label">buggy_dict.py</span>
+                        <span class="btn-desc">Fix Key & Type</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- SECTION 4: INCIDENTS -->
             <section class="section-card" style="border-top: 4px solid var(--warning);">
                 <div class="section-header">
                     <h2>🔥 Infrastructure Stress Tests</h2>

@@ -1,6 +1,9 @@
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from .simulation import router as simulation_router
+from .buggy_math import router as math_router
+from .buggy_list import router as list_router
+from .buggy_dict import router as dict_router
 from .logger import logger
 from .database import get_db_connection
 from .alerts import notify_agent
@@ -63,6 +66,9 @@ async def log_requests(request: Request, call_next):
         raise e
 
 app.include_router(simulation_router)
+app.include_router(math_router)
+app.include_router(list_router)
+app.include_router(dict_router)
 
 @app.get("/todos")
 def get_todos():
