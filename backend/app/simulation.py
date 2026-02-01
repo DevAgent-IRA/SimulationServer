@@ -83,8 +83,13 @@ def simulate_division_by_zero():
     Simulates division by zero (Handled Exception).
     """
     try:
-        result = 1 / 0
-        return {"result": result}
+        numerator = 1
+        denominator = 0
+        if denominator != 0:
+            result = numerator / denominator
+            return {"result": result}
+        else:
+            return {"result": "Division by zero avoided"}
     except Exception as e:
         logger.exception(e)
         notify_agent(severity="high", error_message=str(e), incident_type="division_by_zero")
