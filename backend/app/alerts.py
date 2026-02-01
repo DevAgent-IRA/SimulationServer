@@ -14,12 +14,17 @@ import datetime
 def notify_agent(severity: str, error_message: str, incident_type: str = "raw_error"):
     """
     Simulates notifying the AI agent with a specific payload format.
+    Only sends the last 20 lines of the error message.
     """
+    # Split by lines and keep only the last 20
+    error_lines = error_message.splitlines()
+    error_msg = "\n".join(error_lines[-20:])
+    
     payload = {
         "type": incident_type,
         "severity": severity.upper(),
         "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
-        "error": error_message
+        "error": error_msg
     }
 
     logger.debug("agent_notification", payload=payload, type="incident_trigger")
