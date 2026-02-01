@@ -55,7 +55,7 @@ async def log_requests(request: Request, call_next):
         )
         notify_agent(
             severity="critical",
-            error_message=f"Unhandled Exception: {str(e)} | Method: {request.method} | Path: {request.url.path}",
+            error_message=f"Unhandled Exception: {str(e)} | Method: {request.method} | Path: {request.url.path} | Request ID: {request_id}",
             incident_type="unhandled_exception"
         )
         raise e
