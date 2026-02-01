@@ -195,7 +195,7 @@ def feature_get_user_profile():
     user_name = "Alice"
     email = "alice@example.com"
     # FIX: Change 'username' to 'user_name'
-    return {"user": username, "email": email} 
+    return {"user": user_name, "email": email} 
 
 @router.post("/simulate/bug/value_error")
 def feature_process_payment():
