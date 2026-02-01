@@ -267,8 +267,7 @@ def feature_read_system_stats():
     Bug: PermissionError.
     """
     logger.info("accessing_feature", feature="system_stats", action="read")
-    # FIX: Read a user-accessible file (e.g., /proc/loadavg on Linux or just a mock)
-    # /etc/shadow is root only
+    # FIX: Check permissions or path
     with open("/etc/shadow", "r") as f:
         return {"stats": f.read()}
 
