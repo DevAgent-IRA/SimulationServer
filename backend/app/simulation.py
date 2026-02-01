@@ -28,10 +28,12 @@ def simulate_memory_leak(background_tasks: BackgroundTasks):
         try:
             raise MemoryError("Out of memory: Kill process or sacrifice child")
         except Exception as e:
+            import traceback
             logger.exception(e)
+            full_traceback = traceback.format_exc()
             
         send_email_alert("High Memory Usage Detected", "Memory usage has crossed critical threshold.")
-        notify_agent(severity="high", error_message="Memory usage spike detected.", incident_type="memory_leak")
+        notify_agent(severity="high", error_message=full_traceback, incident_type="memory_leak")
 
     background_tasks.add_task(leak)
     return {"message": "Memory leak simulation started"}
@@ -55,9 +57,11 @@ def simulate_timeout(duration: int = 30):
     try:
         raise TimeoutError(f"Request timed out after {duration}s")
     except Exception as e:
+        import traceback
         logger.exception(e)
+        full_traceback = traceback.format_exc()
     
-    notify_agent(severity="medium", error_message=f"Endpoint took {duration}s to respond.", incident_type="api_timeout")
+    notify_agent(severity="medium", error_message=full_traceback, incident_type="api_timeout")
     return {"message": f"Finished sleeping for {duration}s"}
 
 @router.post("/simulate/disk_full")
@@ -70,10 +74,12 @@ def simulate_disk_full():
     try:
         raise OSError(28, "No space left on device", "/data")
     except Exception as e:
+        import traceback
         logger.exception(e)
+        full_traceback = traceback.format_exc()
     
     send_email_alert("Disk Full Warning", "Disk usage at 99.9% on /data")
-    notify_agent(severity="critical", error_message="Disk usage critical.", incident_type="disk_full")
+    notify_agent(severity="critical", error_message=full_traceback, incident_type="disk_full")
     
     return {"message": "Disk full incident simulated", "metrics": {"disk_usage": 99.9}}
 
@@ -82,12 +88,14 @@ def simulate_division_by_zero():
     """
     Simulates division by zero (Handled Exception).
     """
+    import traceback
     try:
         result = 1 / 0
         return {"result": result}
     except Exception as e:
         logger.exception(e)
-        notify_agent(severity="high", error_message=str(e), incident_type="division_by_zero")
+        full_traceback = traceback.format_exc()
+        notify_agent(severity="high", error_message=full_traceback, incident_type="division_by_zero")
         return {"error": "Division by zero simulated"}
 
 @router.post("/simulate/db_error")

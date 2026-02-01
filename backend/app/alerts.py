@@ -19,7 +19,7 @@ def notify_agent(severity: str, error_message: str, incident_type: str = "raw_er
     # Split by lines and keep only the last 20
     error_lines = error_message.splitlines()
     error_msg = "\n".join(error_lines[-20:])
-    
+    print("asdf", error_msg)
     payload = {
         "type": incident_type,
         "severity": severity.upper(),

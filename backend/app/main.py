@@ -6,6 +6,7 @@ from .database import get_db_connection
 from .alerts import notify_agent
 import time
 import uuid
+import traceback
 from pydantic import BaseModel
 
 class TodoItem(BaseModel):
@@ -53,9 +54,10 @@ async def log_requests(request: Request, call_next):
                 "request_id": request_id
             }
         )
+        full_traceback = traceback.format_exc()
         notify_agent(
             severity="critical",
-            error_message=f"Unhandled Exception: {str(e)} | Method: {request.method} | Path: {request.url.path}",
+            error_message=full_traceback,
             incident_type="unhandled_exception"
         )
         raise e
