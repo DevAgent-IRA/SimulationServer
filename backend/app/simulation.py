@@ -133,7 +133,10 @@ def simulate_index_error():
     """
     logger.info("triggering_unhandled_error", type="IndexError")
     my_list = [1, 2, 3]
-    return my_list[10]  # Crash
+    if len(my_list) > 10:
+        return my_list[10]  # Crash
+    else:
+        return {"error": "List index out of range"}
 
 @router.post("/simulate/unhandled/key_error")
 def simulate_key_error():
