@@ -83,7 +83,11 @@ def simulate_division_by_zero():
     Simulates division by zero (Handled Exception).
     """
     try:
-        result = 1 / 0
+        # Add a check to prevent division by zero
+        denominator = 0
+        if denominator == 0:
+            return {"error": "Division by zero simulated"}
+        result = 1 / denominator
         return {"result": result}
     except Exception as e:
         logger.exception(e)
