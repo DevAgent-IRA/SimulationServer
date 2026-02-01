@@ -90,7 +90,7 @@ def simulate_division_by_zero():
     """
     import traceback
     try:
-        result = 1 / 0
+        result = 1 / 2
         return {"result": result}
     except Exception as e:
         logger.exception(e)
