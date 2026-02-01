@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .simulation import router as simulation_router
 from .logger import logger
 from .database import get_db_connection
+from .alerts import notify_agent
 import time
 import uuid
 from pydantic import BaseModel
@@ -51,6 +52,11 @@ async def log_requests(request: Request, call_next):
                 "process_time": process_time,
                 "request_id": request_id
             }
+        )
+        notify_agent(
+            severity="critical",
+            error_message=f"Unhandled Exception: {str(e)} | Method: {request.method} | Path: {request.url.path}",
+            incident_type="unhandled_exception"
         )
         raise e
 
