@@ -182,7 +182,7 @@ def feature_add_to_cart():
     logger.info("accessing_feature", feature="shopping_cart", action="add")
     cart = ["apple", "orange"]
     # FIX: Change 'appendd' to 'append'
-    cart.appendd("banana") 
+    cart.append("banana") 
     return {"status": "success", "cart": cart}
 
 @router.post("/simulate/bug/name_error")
