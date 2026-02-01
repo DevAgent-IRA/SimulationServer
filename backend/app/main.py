@@ -90,7 +90,7 @@ def create_todo(item: TodoItem):
 @app.get("/")
 def read_root():
     logger.info("root_accessed")
-    return {"message": "Incident Response Simulation Backend"}
+    return {"message": "Test Notification Message Updated"}
 
 @app.get("/metrics")
 def metrics():
